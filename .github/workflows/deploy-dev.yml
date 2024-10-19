@@ -1,0 +1,40 @@
+name: Deploy to Dev
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular app for dev
+        run: npm run build -- --configuration=dev
+
+      - name: Deploy to S3 Dev
+        uses: aws-actions/s3-sync-action@v2
+        with:
+          bucket:  ${{ secrets.S3_BUCKET }}
+          region: ap-south-1
+          source-dir: dist/DiscernUI
+          destination-dir: dev/  # Deploy to dev folder
+
+      - name: Invalidate CloudFront cache (dev)
+        uses: chetan/invalidate-cloudfront-action@v2.0.1
+        with:
+          distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          paths: "/dev/*"
+        env:
+          AWS_REGION: ap-south-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
