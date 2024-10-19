@@ -1,4 +1,4 @@
-name: Deploy to Dev
+name: Deploy DiscernUI to Dev
 
 on: workflow_dispatch
 
@@ -24,9 +24,9 @@ jobs:
       - name: Deploy to S3 Dev
         uses: aws-actions/s3-sync-action@v2
         with:
-          bucket:  ${{ secrets.S3_BUCKET }}
+          bucket: ${{ secrets.S3_BUCKET }}
           region: ap-south-1
-          source-dir: dist/DiscernUI
+          source-dir: dist/
           destination-dir: dev/  # Deploy to dev folder
 
       - name: Invalidate CloudFront cache (dev)
