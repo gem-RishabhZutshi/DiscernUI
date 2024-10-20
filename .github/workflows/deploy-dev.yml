@@ -32,5 +32,5 @@ jobs:
 
       - name: Deploy to dev
         run: |
-          aws s3 sync ./dist/photographer s3://discern-uii-dev/dev  --cache-control max-age=172800 --delete 
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/dev/*"
+          aws s3 sync ./dist/photographer s3://discern-uii-dev --cache-control max-age=172800 --delete 
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
